@@ -71,7 +71,7 @@ async function handleAddKey() {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "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", // Optional if you need authentication
+                    "Authorization": "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", // Optional if you need authentication
                 },
                 body: JSON.stringify({
                     files: {
