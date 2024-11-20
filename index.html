@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="key-section">
+        <label for="key-input">Enter Key:</label>
+        <input type="text" id="key-input" placeholder="Enter key to access the website">
+        <button id="submit-key">Submit</button>
+    </div>
+
+    <div id="iframe-container" style="display: none;">
+        <iframe id="iframe" src="https://example.com" frameborder="0"></iframe>
+    </div>
+
+    <div id="master-key-section" style="display: none;">
+        <label for="master-key">Enter Master Key to Add New Key:</label>
+        <input type="text" id="master-key" placeholder="Enter master key">
+        <button id="submit-master-key">Submit Master Key</button>
+        <div id="add-key-section" style="display: none;">
+            <label for="new-key">What Key to Add:</label>
+            <input type="text" id="new-key" placeholder="Enter new key">
+            <button id="add-key">Add Key</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
