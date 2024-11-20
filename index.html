@@ -4,30 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Key System</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        #iframe-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+        }
+        #key-input {
+            margin: 20px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #add-key-section {
+            display: none;
+            margin-top: 20px;
+        }
+        #new-key-input {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <div id="key-section">
-        <label for="key-input">Enter Key:</label>
-        <input type="text" id="key-input" placeholder="Enter key to access the website">
-        <button id="submit-key">Submit</button>
-    </div>
 
-    <div id="iframe-container" style="display: none;">
-        <iframe id="iframe" src="https://example.com" frameborder="0"></iframe>
-    </div>
+<h1>Enter Key to Access Website</h1>
+<input type="text" id="key-input" placeholder="Enter key to access" autofocus>
+<div id="add-key-section">
+    <h3>Enter Key to Add:</h3>
+    <input type="text" id="new-key-input" placeholder="Enter key to add" autofocus>
+    <button onclick="addNewKey()">Add Key</button>
+</div>
+<iframe id="iframe-container" src="https://example.com"></iframe>
 
-    <div id="master-key-section" style="display: none;">
-        <label for="master-key">Enter Master Key to Add New Key:</label>
-        <input type="text" id="master-key" placeholder="Enter master key">
-        <button id="submit-master-key">Submit Master Key</button>
-        <div id="add-key-section" style="display: none;">
-            <label for="new-key">What Key to Add:</label>
-            <input type="text" id="new-key" placeholder="Enter new key">
-            <button id="add-key">Add Key</button>
-        </div>
-    </div>
+<script>
+    // Predefined keys and master key
+    const validKeys = ["key1", "key2", "key3"];  // Add your valid keys here
+    const masterKey = "masterkey123";  // Replace with your actual master key
 
-    <script src="script.js"></script>
+    // Your GitHub Gist settings
+    const gistId = "1fd43da5dd9a185676969fe09a692b2d";  // Your Gist ID
+    const gistFileName = "keys.txt";    // The file name in your Gist
+    const token = "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";  // Your GitHub token
+
+    const keyInput = document.getElementById("key-input");
+    const iframeContainer = document.getElementById("iframe-container");
+    const addKeySection = document.getElementById("add-key-section");
+    const newKeyInput = document.getElementById("new-key-input");
+
+    // Check if the entered key is valid
+    function checkKey() {
+        const enteredKey = keyInput.value.trim();
+
+        if (validKeys.includes(enteredKey)) {
+            // Key is valid, show the iframe
+            iframeContainer.style.display = "block";
+            keyInput.disabled = true; // Disable key input once entered correctly
+            keyInput.value = ''; // Clear input
+        } else if (enteredKey === masterKey) {
+            // If master key is entered, show the section to add a new key
+            addKeySection.style.display = "block";
+        } else {
+            alert("Invalid key! Please try again.");
+        }
+    }
+
+    // Add a new key to the list and update the Gist
+    async function addNewKey() {
+        const newKey = newKeyInput.value.trim();
+
+        if (newKey && !validKeys.includes(newKey)) {
+            validKeys.push(newKey); // Add the new key to the list
+
+            // Update the Gist with the new key
+            try {
+                const updatedKeys = validKeys.join("\n");
+
+                const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            [gistFileName]: {
+                                content: updatedKeys
+                            }
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    alert(`Key "${newKey}" added successfully.`);
+                    newKeyInput.value = ''; // Clear the input field
+                } else {
+                    const errorMessage = await response.text();
+                    alert(`Failed to add key: ${errorMessage}`);
+                }
+            } catch (error) {
+                alert("An error occurred while adding the key.");
+            }
+        } else {
+            alert("Please enter a valid, new key.");
+        }
+    }
+
+    // Event listener for when a key is entered
+    keyInput.addEventListener("input", checkKey);
+</script>
+
 </body>
 </html>
